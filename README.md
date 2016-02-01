@@ -1,4 +1,4 @@
-# knowledge-based-reasoning-framework
+# KRF v1.0
 Knowledge-based Reasoning and Recommendation Framework (KRF)
 
 <br>
