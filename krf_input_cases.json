@@ -1,0 +1,177 @@
+{
+    "inputCaseBase": [{
+        "Current Activity": ["Sitting"],
+        "Activity Duration": ["15m"],
+        "Activity Environment": ["Workplace"]
+    }, {
+        "Current Activity": ["Sitting"],
+        "Activity Duration": ["15m"],
+        "Activity Environment": ["Workplace"],
+        "AgeGroup": ["Adult"],
+        "Disability": ["None"],
+        "HealthCondition": ["Normal"],
+        "WeightStatus": ["Overweight"]
+    }, {
+        "Current Activity": ["Sitting"],
+        "Activity Duration": ["15m"],
+        "Activity Status": ["Continuous"]
+    }, {
+        "Current Activity": ["Sitting"],
+        "Activity Duration": ["15m"],
+        "Activity Status": ["Continuous"],
+        "Activity Environment": ["Workplace"]
+    }, {
+        "Current Activity": ["Sitting"],
+        "Activity Duration": ["17m"],
+        "Activity Status": ["Continuous"]
+    }, {
+        "Current Activity": ["Sitting"],
+        "Activity Duration": ["29m"],
+        "Age Group": ["Adult"],
+        "Health Status": ["Diabetic"],
+        "Weight Status": ["Obese"]
+    }, {
+        "Current Activity": ["Sitting"],
+        "Activity Duration": ["20m"],
+        "Age Group": ["Adult"],
+        "Health Status": ["Diabetic"],
+        "Weight Status": ["Obese"]
+    }, {
+        "Current Activity": ["Sitting"],
+        "Activity Duration": ["24m"],
+        "Activity Environment": ["Workplace"],
+        "Activity Status": ["Continuous"],
+        "Age Group": ["Adult"],
+        "Disability": ["None"],
+        "Health Status": ["Diabetic"],
+        "Weight Status": ["Obese"]
+    }, {
+        "Current Activity": ["Sitting"],
+        "Activity Duration": ["50m"],
+        "Activity Status": ["Continuous"]
+    }, {
+        "Current Activity": ["Sitting"],
+        "Activity Duration": ["50m"],
+        "Activity Status": ["Continuous"],
+        "Activity Environment": ["Workplace"],
+        "Age Group": ["Adult"],
+        "Disability": ["None"],
+        "Health Status": ["Diabetic"],
+        "Weight Status": ["Obese"]
+    }, {
+        "Current Activity": ["Sitting"],
+        "Activity Duration": ["1h"],
+        "Age Group": ["Adult"],
+        "Weight Status": ["Non-obese"]
+    }, {
+        "Current Activity": ["Sitting"],
+        "Activity Duration": ["1h"],
+        "Activity Status": ["Continuous"],
+        "Activity Environment": ["Workplace"],
+        "Age Group": ["Adult"],
+        "Health Status": ["Diabetic"],
+        "Weight Status": ["Non-obese"]
+    }, {
+        "Current Activity": ["Sitting"],
+        "Activity Duration": ["1h"],
+        "Activity Environment": ["Workplace"]
+    }, {
+        "Current Activity": ["Sitting"],
+        "Activity Duration": ["1h"],
+        "Activity Status": ["Continuous"],
+        "Activity Environment": ["Workplace"],
+        "Age Group": ["Adult"],
+        "Weight Status": ["Non-obese"]
+    }, {
+        "Current Activity": ["Sitting"],
+        "Activity Duration": ["3h"],
+        "Activity Status": ["Non-continuous"]
+    }, {
+        "Current Activity": ["Sitting"],
+        "Activity Duration": ["3.5h"],
+        "Activity Status": ["Non-continuous"],
+        "Activity Environment": ["Workplace"],
+        "Age Group": ["Adult"],
+        "Weight Status": ["Non-obese"]
+    }, {
+        "Current Activity": ["Sitting"],
+        "Activity Duration": ["4h"],
+        "Activity Status": ["Non-continuous"]
+    }, {
+        "Current Activity": ["Sitting"],
+        "Activity Duration": ["5h"],
+        "Activity Status": ["Non-continuous"],
+        "Activity Environment": ["Workplace"],
+        "Age Group": ["Adult"],
+        "Weight Status": ["Non-obese"]
+    }, {
+        "Current Activity": ["Sitting"],
+        "Activity Duration": ["6h"],
+        "Activity Status": ["Continuous"]
+    }, {
+        "Current Activity": ["Sitting"],
+        "Activity Duration": ["7h"],
+        "Activity Status": ["Non-continuous"],
+        "Gender": ["Female"],
+        "Activity History": ["Inactive"]
+    }, {
+        "Current Activity": ["Sitting"],
+        "Activity Duration": ["7h"],
+        "Activity Status": ["Non-continuous"],
+        "Gender": ["Female"],
+        "Activity History": ["Inactive"],
+        "Age Group": ["Adult"],
+        "Weight Status": ["Non-obese"]
+    }, {
+        "Current Activity": ["Sitting"],
+        "Activity Duration": ["8h"],
+        "Activity Status": ["Non-continuous"]
+    }, {
+        "Current Activity": ["Standing"],
+        "Activity Duration": ["2h"],
+        "Activity Environment": ["Workplace"]
+    }, {
+        "Current Activity": ["Standing"],
+        "Activity Duration": ["2h"],
+        "Activity Environment": ["Workplace"],
+        "Activity Status": ["Non-continuous"]
+    }, {
+        "Current Activity": ["Standing"],
+        "Activity Duration": ["4h"],
+        "Activity Environment": ["Workplace"],
+        "Activity Status": ["Non-continuous"]
+    }, {
+        "Current Activity": ["Standing"],
+        "Activity Duration": ["4h"],
+        "Activity Environment": ["Workplace"]
+    }, {
+        "Current Activity": ["Standing"],
+        "Activity Duration": ["1h"],
+        "Gender": ["Male"]
+    }, {
+        "Current Activity": ["Standing"],
+        "Activity Duration": ["6h"],
+        "Health Status": ["Pregnant"],
+        "Gender": ["Female"],
+        "Activity Status": ["Non-continuous"]
+    }, {
+        "Current Activity": ["Standing"],
+        "Activity Duration": ["9h"],
+        "Health Status": ["Pregnant"],
+        "Gender": ["Female"],
+        "Activity Status": ["Non-continuous"]
+    }, {
+        "Current Activity": ["LyingDown"],
+        "Activity Duration": ["168h"],
+        "Activity Status": ["Non-continuous"],
+        "Activity Environment": ["Workplace"]
+    }, {
+        "Current Activity": ["LyingDown"],
+        "Activity Duration": ["1h"]
+    }, {
+        "Current Activity": ["LyingDown"],
+        "Activity Duration": ["1h"],
+        "Activity Status": ["Non-continuous"],
+        "Activity Environment": ["Workplace"]
+    }]
+}
