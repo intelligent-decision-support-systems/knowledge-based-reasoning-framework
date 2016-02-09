@@ -5,8 +5,7 @@ Knowledge-based Reasoning and Recommendation Framework (KRF)
 <img src="https://github.com/intelligent-decision-support-systems/knowledge-based-reasoning-framework/blob/gh-pages/images/krf_img.png">
 
 <br>
-### Purpose
-......<br>
+## How to Build & Run
 
 ### Prerequisites
 Download and install maven [- download](https://maven.apache.org/download.cgi)
