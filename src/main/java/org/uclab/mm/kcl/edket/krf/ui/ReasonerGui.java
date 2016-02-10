@@ -8,6 +8,8 @@ import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.util.List;
+import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -22,6 +24,9 @@ import javax.swing.border.TitledBorder;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
+import org.uclab.mm.kcl.edket.krf.KRFResult;
+import org.uclab.mm.kcl.edket.krf.PatternMatcher;
+import org.uclab.mm.kcl.edket.krf.RecommendationBuilder;
 import org.uclab.mm.kcl.edket.krf.model.inputcasebase.InputCaseBase;
 import org.uclab.mm.kcl.edket.krf.model.knowledgebase.KRFKnowledgeBase;
 
@@ -52,16 +57,15 @@ public class ReasonerGui {
     private KRFKnowledgeBase knowledgeBase;
     private InputCaseBase inputCaseBase;
 
-    public static final String KRF_INPUT_CASES = "krf_input_cases.json";
-    // public static final String KRF_INPUT_CASES = "facts.json";
-    public static final String KRF_KNOWLEDGE_BASE = "krf_knowledge_base.json";
+    private static final String KRF_INPUT_CASES = "krf_input_cases.json";
+    private static final String KRF_KNOWLEDGE_BASE = "krf_knowledge_base.json";
 
     private static final String APP_TITLE = "Knowledge-based Reasoning and Recommendation Framework (KRF) -v1.0";
 
     /**
      * Launch the application.
      */
-    public static void main(String[] args) {
+    public static void invokeGui(String[] args) {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
@@ -160,6 +164,7 @@ public class ReasonerGui {
             ruleBtn = new JButton("Add Rule");
             ruleBtn.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent arg0) {
+                    message.setText("Append new rule functionality will be added soon!");
                 }
             });
             ruleBtn.setBounds(154, 214, 89, 23);
@@ -172,6 +177,7 @@ public class ReasonerGui {
             factsBtn = new JButton("Add Fact");
             factsBtn.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
+                    message.setText("Append new fact functionality will be added soon!");
                 }
             });
             factsBtn.setBounds(154, 404, 89, 23);
@@ -219,6 +225,11 @@ public class ReasonerGui {
             runBtn.setBackground(new Color(0, 153, 0));
             runBtn.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
+                    long startTime = System.currentTimeMillis();
+                    updateInputData();
+                    generateRecommendations();
+                    long overallTime = System.currentTimeMillis() - startTime;
+                    message.setText("Overall Operation Time: " + overallTime + " milliseconds");
                 }
             });
             runBtn.setBounds(316, 404, 260, 25);
@@ -367,6 +378,21 @@ public class ReasonerGui {
 
         } catch (Exception ex) {
             // . TODO
+        }
+    }
+    
+    public void generateRecommendations(){
+        try {            
+            RecommendationBuilder recommendationBuilder = new RecommendationBuilder(new PatternMatcher());
+            for(Map<String, List<String>> conditionsValue : inputCaseBase.getInputCaseBase()){
+                KRFResult krfResult = recommendationBuilder.buildRecommendation(conditionsValue, knowledgeBase);
+                recommendationBuilder.generateResults(krfResult);
+            }
+                
+            message.setText("Done.");
+
+        } catch (Exception ex) {
+            message.setText("Cannot load data!!!");
         }
     }
 }

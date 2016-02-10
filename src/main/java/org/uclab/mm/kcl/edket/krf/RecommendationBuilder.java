@@ -1,6 +1,5 @@
 package org.uclab.mm.kcl.edket.krf;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -21,23 +20,34 @@ public class RecommendationBuilder implements IRecommendationBuilder {
     }
     
     @Override
-    public List<KRFRule> buildRecommendation(Map<String, List<String>> conditionsValue, KRFKnowledgeBase krfKnowledgeBase) {
+    public KRFResult buildRecommendation(Map<String, List<String>> conditionsValue, KRFKnowledgeBase krfKnowledgeBase) {
         log.info("Building recommendation...");
+        long matcherStartTime = System.currentTimeMillis();
         List<KRFRule> firedRules = patternMatcher.fireRule(conditionsValue, krfKnowledgeBase);
+        long matcherTimeTaken = System.currentTimeMillis() - matcherStartTime;
+        long resolverStartTime = System.currentTimeMillis();
         List<KRFRule> finalResolvedRules = ConflictResolver.resolveConflict(firedRules);
-        return finalResolvedRules;
+        long resolverTimeTaken = System.currentTimeMillis() - resolverStartTime;
+        
+        KRFResult krfResult = new KRFResult();
+        
+        krfResult.setInputCase(conditionsValue);
+        krfResult.setMatchedRules(firedRules);
+        krfResult.setFinalResolvedRules(finalResolvedRules);
+        krfResult.setTimeTakenByMatcher(matcherTimeTaken);
+        krfResult.setTimeTakenByConflictResolver(resolverTimeTaken);
+        
+        return krfResult;
     }
 
     @Override
-    public void generateResults(List<KRFRule> finalResolvedRules) {
+    public void generateResults(KRFResult krfResult) {
         log.info("Generating Results...");
         try {
-            RecommendationsResultGenerator.generateResults(finalResolvedRules);
+            RecommendationsResultGenerator.generateResults(krfResult);
         } catch (JsonGenerationException e) {
             e.printStackTrace();
         } catch (JsonMappingException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
             e.printStackTrace();
         }
     }
