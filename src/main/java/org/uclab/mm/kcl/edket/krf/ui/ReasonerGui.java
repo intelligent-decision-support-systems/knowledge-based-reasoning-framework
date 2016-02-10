@@ -164,7 +164,7 @@ public class ReasonerGui {
             ruleBtn = new JButton("Add Rule");
             ruleBtn.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent arg0) {
-                    message.setText("Append new rule functionality will be added soon!");
+                    message.setText("Un-implemented functionality");
                 }
             });
             ruleBtn.setBounds(154, 214, 89, 23);
@@ -177,7 +177,7 @@ public class ReasonerGui {
             factsBtn = new JButton("Add Fact");
             factsBtn.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    message.setText("Append new fact functionality will be added soon!");
+                    message.setText("Un-implemented functionality");
                 }
             });
             factsBtn.setBounds(154, 404, 89, 23);
