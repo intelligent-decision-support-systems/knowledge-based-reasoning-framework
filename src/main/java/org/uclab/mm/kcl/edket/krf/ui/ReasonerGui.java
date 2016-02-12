@@ -8,6 +8,9 @@ import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -22,13 +25,22 @@ import javax.swing.UIManager;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.TitledBorder;
 
-import org.codehaus.jackson.map.ObjectMapper;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.type.TypeReference;
 import org.uclab.mm.kcl.edket.krf.KRFResult;
 import org.uclab.mm.kcl.edket.krf.PatternMatcher;
 import org.uclab.mm.kcl.edket.krf.RecommendationBuilder;
 import org.uclab.mm.kcl.edket.krf.model.inputcasebase.InputCaseBase;
+import org.uclab.mm.kcl.edket.krf.model.knowledgebase.KRFConclusion;
+import org.uclab.mm.kcl.edket.krf.model.knowledgebase.KRFCondition;
 import org.uclab.mm.kcl.edket.krf.model.knowledgebase.KRFKnowledgeBase;
+import org.uclab.mm.kcl.edket.krf.model.knowledgebase.KRFRule;
+import org.uclab.mm.kcl.edket.krf.util.KRFConditionType;
+import org.uclab.mm.kcl.edket.krf.util.KRFConditionValueOperator;
+import org.uclab.mm.kcl.edket.krf.util.KRFUtil;
 
 public class ReasonerGui {
 
@@ -56,7 +68,8 @@ public class ReasonerGui {
 
     private KRFKnowledgeBase knowledgeBase;
     private InputCaseBase inputCaseBase;
-
+    
+    private static Logger log = LogManager.getLogger(ReasonerGui.class);
     private static final String KRF_INPUT_CASES = "krf_input_cases.json";
     private static final String KRF_KNOWLEDGE_BASE = "krf_knowledge_base.json";
 
@@ -72,7 +85,8 @@ public class ReasonerGui {
                     ReasonerGui window = new ReasonerGui();
                     window.frame.setVisible(true);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    log.error("Cannot invoke KRF GUI!");
+                    System.exit(0);
                 }
             }
         });
@@ -103,7 +117,11 @@ public class ReasonerGui {
         frame.getContentPane().add(getMessagePanel());
         frame.setResizable(false);
         // . loading rules and facts
-        updateInputData();
+        
+        loadRules();
+        loadFacts();
+        loadRuleModel();
+        loadFactModel();
     }
 
     public static String loadData(String filePath) throws Exception {
@@ -164,7 +182,14 @@ public class ReasonerGui {
             ruleBtn = new JButton("Add Rule");
             ruleBtn.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent arg0) {
-                    message.setText("Un-implemented functionality");
+                    if(addNewRule()){
+                        if(updateKRFKnowledgeBaseFile()){
+                            loadRuleModel();
+                            loadRules();
+                            message.setText("Rule added Successfully!");   
+                        }
+                    }
+                    
                 }
             });
             ruleBtn.setBounds(154, 214, 89, 23);
@@ -177,7 +202,13 @@ public class ReasonerGui {
             factsBtn = new JButton("Add Fact");
             factsBtn.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    message.setText("Un-implemented functionality");
+                    if(addNewFact()){
+                        if(updateKRFInputCaseFile()){
+                            loadFactModel();
+                            loadFacts();
+                            message.setText("ConditionValue added Successfully!");   
+                        }
+                    }
                 }
             });
             factsBtn.setBounds(154, 404, 89, 23);
@@ -226,7 +257,8 @@ public class ReasonerGui {
             runBtn.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     long startTime = System.currentTimeMillis();
-                    updateInputData();
+                    loadRules();
+                    loadFacts();
                     generateRecommendations();
                     long overallTime = System.currentTimeMillis() - startTime;
                     message.setText("Overall Operation Time: " + overallTime + " milliseconds");
@@ -342,45 +374,55 @@ public class ReasonerGui {
         return scrollPane_3;
     }
 
-    private void updateInputData() {
-        try {
-
-            ObjectMapper mapper = new ObjectMapper();
-
+    private void loadFacts(){
+        try{
+            message.setText("loading facts...");
+            String loadedFacts = loadData(KRF_INPUT_CASES);
+            inputCaseBase = KRFUtil.objectMapper.readValue(loadedFacts, InputCaseBase.class);
+            String prettyFacts = KRFUtil.objectMapper.writerWithDefaultPrettyPrinter()
+                    .writeValueAsString(inputCaseBase);
+            loadFactArea.setText(prettyFacts);
+            message.setText("ConditionsValue loaded successfully!");
+        } catch(Exception e) {
+            message.setText("Error Loading Facts: {} " + e.getMessage());
+        }
+    }
+    private void loadRules(){
+        try{
             message.setText("loading rules...");
             String loadedRules = loadData(KRF_KNOWLEDGE_BASE);
 
-            Object jsonRules = mapper.readValue(loadedRules, Object.class);
-            String prettyRules = mapper.writerWithDefaultPrettyPrinter()
-                    .writeValueAsString(jsonRules);
+            knowledgeBase = KRFUtil.objectMapper.readValue(loadedRules, KRFKnowledgeBase.class);
+            String prettyRules = KRFUtil.objectMapper.writerWithDefaultPrettyPrinter()
+                    .writeValueAsString(knowledgeBase);
             loadRuleArea.setText(prettyRules);
-            message.setText("Done.");
-
-            message.setText("loading facts...");
-            String loadedFacts = loadData(KRF_INPUT_CASES);
-            Object jsonFacts = mapper.readValue(loadedFacts, Object.class);
-            String prettyFacts = mapper.writerWithDefaultPrettyPrinter()
-                    .writeValueAsString(jsonFacts);
-            loadFactArea.setText(prettyFacts);
-
-            try {
-                knowledgeBase = mapper.readValue(loadedRules,
-                        new TypeReference<KRFKnowledgeBase>() {
-                        });
-                inputCaseBase = mapper.readValue(loadedFacts,
-                        new TypeReference<InputCaseBase>() {
-                        });
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            message.setText("Done.");
-
-        } catch (Exception ex) {
-            // . TODO
+            message.setText("Rules loaded successfully!");
+        }catch(Exception e){
+            message.setText("Error Loaded Rules: {} " + e.getMessage());
         }
     }
+    private void loadRuleModel(){
+        String ruleModel = getRuleModel();
+        addRuleArea.setText(ruleModel);
+    }
+    private void loadFactModel(){
+        String factModel = getFactModel();
+        addFactArea.setText(factModel);
+    }
     
+    private String getFactModel(){
+        String sampleFact = "{\"key\":null}";
+        String prettyFact = null;
+        try {
+            Object jsonFact = KRFUtil.objectMapper.readValue(sampleFact, Object.class);
+            prettyFact = KRFUtil.objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonFact);
+            addFactArea.setText(prettyFact);
+        } catch (Exception e) {
+            message.setText("Error loading conditionValue model");
+        }
+        
+        return prettyFact;
+    }
     public void generateRecommendations(){
         try {            
             RecommendationBuilder recommendationBuilder = new RecommendationBuilder(new PatternMatcher());
@@ -394,5 +436,163 @@ public class ReasonerGui {
         } catch (Exception ex) {
             message.setText("Cannot load data!!!");
         }
+    }
+    
+    private String getRuleModel(){
+        
+        KRFRule sampleRuleModel = new KRFRule();
+        List<KRFConclusion> sampleConclusionList = new ArrayList<KRFConclusion>();
+        sampleConclusionList.add(new KRFConclusion());
+        List<KRFCondition> sampleConditionList = new ArrayList<KRFCondition>();
+        sampleConditionList.add(new KRFCondition());
+        
+        sampleRuleModel.setConclusionList(sampleConclusionList);
+        sampleRuleModel.setConditionList(sampleConditionList);
+        
+        String prettyRuleModel = null;
+        try {
+            prettyRuleModel = KRFUtil.objectMapper.writerWithDefaultPrettyPrinter()
+                    .writeValueAsString(sampleRuleModel);
+        } catch (JsonGenerationException e) {
+            log.error(e.getMessage());
+        } catch (JsonMappingException e) {
+            log.error(e.getMessage());
+        } catch (IOException e) {
+            log.error(e.getMessage());
+        }
+
+        return prettyRuleModel;
+    }
+    
+    private boolean addNewRule(){
+        boolean succeeded = false;
+        try{
+            String ruleStr = addRuleArea.getText();
+            KRFRule newRule = KRFUtil.objectMapper.readValue(ruleStr, new TypeReference<KRFRule>() {});
+            if(isValidRule(newRule)){
+                knowledgeBase.getRules().add(newRule);
+                succeeded = true;
+                message.setText("New Rule added successfully!");  
+            }
+        }catch(Exception e){
+            message.setText("Erorr adding rule {} " + e.getMessage());
+        }
+        return succeeded;
+    }
+    private boolean addNewFact(){
+        boolean succeeded = false;
+        try{
+            String factStr = addFactArea.getText();
+            Map<String, List<String>> newFact = KRFUtil.objectMapper.readValue(factStr, new TypeReference<Map<String, List<String>>>() {});
+            if(!isValidFact(newFact)){
+                throw new Exception("Invalid Format Specified For Fact!");
+            }
+            inputCaseBase.getInputCaseBase().add(newFact);
+            succeeded = true;
+            message.setText("New Fact added successfully");
+        }catch(Exception e){
+            message.setText("Error adding fact {} " + e.getMessage());
+        }
+        
+        return succeeded;
+    }
+    
+    private boolean updateKRFKnowledgeBaseFile(){
+        boolean updated = false;
+        FileWriter writer = null;
+        try{
+            String krfRulesStr = KRFUtil.objectMapper.writeValueAsString(knowledgeBase);
+            writer = new FileWriter(KRF_KNOWLEDGE_BASE, false);
+            writer.write(krfRulesStr);
+            writer.flush();
+            writer.close();
+            writer = null;
+            updated = true;
+        } catch(Exception e) {
+            message.setText("Error: Cannot update " + KRF_KNOWLEDGE_BASE + "!");
+            if(writer != null){try{writer.close();}catch(IOException ex){}}
+        }
+        return updated;
+    }
+    private boolean updateKRFInputCaseFile(){
+        boolean updated = false;
+        FileWriter writer = null;
+        try{
+            String krfFactsStr = KRFUtil.objectMapper.writeValueAsString(inputCaseBase);
+            writer = new FileWriter(KRF_INPUT_CASES, false);
+            writer.write(krfFactsStr);
+            writer.flush();
+            writer.close();
+            writer = null;
+            updated = true;
+        } catch(Exception e) {
+            message.setText("Error: Cannot update " + KRF_INPUT_CASES + "!");
+            if(writer != null){try{writer.close();}catch(IOException ex){}}
+        }
+        return updated;
+    }
+    
+    private boolean isValidRule(KRFRule rule){
+        if(rule.getRuleConclusion() == null || rule.getRuleConclusion().length()==0){
+            message.setText("Error: RuleConclusion cannot be empty!");
+            return false;
+        }
+        if(rule.getRuleID() == null){
+            message.setText("Error: RuleId cannot be empty!");
+            return false;
+        }
+        if(rule.getConditionList() == null || rule.getConditionList().isEmpty()){
+            message.setText("Error: RuleConditionList cannot be empty!");
+            return false;
+        }
+        for(KRFCondition condition : rule.getConditionList()){
+            if(condition == null){
+                message.setText("Error: RuleCondition cannot be empty!");
+                return false;
+            }
+            if(condition.getConditionKey() == null || condition.getConditionKey().isEmpty()){
+                message.setText("Error: ConditionKey cannot be empty!");
+                return false;
+            }
+            if(condition.getConditionValue() == null || condition.getConditionValue().isEmpty()){
+                message.setText("Error: ConditionValue cannot be empty!");
+                return false;
+            }
+            String type = condition.getConditionType();
+            if(type == null || type.isEmpty()){
+                message.setText("Error: ConditionType cannot be empty!");
+                return false;
+            }
+            try{
+                if(KRFConditionType.valueOf(type) == null){
+                    message.setText("Error: Invalid conditionType specified!");
+                    return false;
+                }
+            }catch(Exception e){
+                message.setText("Error: Invalid conditionType specified!");
+                return false;
+            }
+            String cvo = condition.getConditionValueOperator();
+            if(cvo == null || cvo.isEmpty()){
+                message.setText("Error: ConditionValueOperator cannot be empty!");
+                return false;
+            }
+            if(KRFConditionValueOperator.getValueOperator(cvo) == null){
+                message.setText("Error: Invalid operator specified!");
+                return false;
+            }
+        }
+        return true;
+    }
+    private boolean isValidFact(Map<String, List<String>> fact){
+        if(fact.isEmpty()){
+            return false;
+        }
+        for(String k : fact.keySet()){
+            if(fact.get(k) == null || fact.get(k).isEmpty()){
+                return false;
+            }
+        }
+        return true;
     }
 }

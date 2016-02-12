@@ -21,7 +21,7 @@ public class RecommendationBuilder implements IRecommendationBuilder {
     
     @Override
     public KRFResult buildRecommendation(Map<String, List<String>> conditionsValue, KRFKnowledgeBase krfKnowledgeBase) {
-        log.info("Building recommendation...");
+        log.debug("Building recommendation...");
         long matcherStartTime = System.currentTimeMillis();
         List<KRFRule> firedRules = patternMatcher.fireRule(conditionsValue, krfKnowledgeBase);
         long matcherTimeTaken = System.currentTimeMillis() - matcherStartTime;
@@ -42,7 +42,7 @@ public class RecommendationBuilder implements IRecommendationBuilder {
 
     @Override
     public void generateResults(KRFResult krfResult) {
-        log.info("Generating Results...");
+        log.debug("Generating Results...");
         try {
             RecommendationsResultGenerator.generateResults(krfResult);
         } catch (JsonGenerationException e) {

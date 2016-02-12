@@ -38,6 +38,7 @@ public class RecommendationsResultGenerator {
         
         FileWriter writer = null;
         try{
+            log.debug("Appending generated results to {}", CSV_FILE_NAME);
             writer = new FileWriter(csvFile, true);
             if(addTitle){
                 writer.append(TITLE_ROW);
