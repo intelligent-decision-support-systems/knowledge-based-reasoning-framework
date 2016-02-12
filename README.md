@@ -2,7 +2,7 @@
 Knowledge-based Reasoning and Recommendation Framework (KRF)
 
 <br>
-<img src="https://github.com/intelligent-decision-support-systems/knowledge-based-reasoning-framework/blob/gh-pages/images/krf_img.png">
+<img src="https://github.com/intelligent-decision-support-systems/knowledge-based-reasoning-framework/blob/gh-pages/images/krf_crop.jpg">
 
 <br>
 ## How to Build & Run
