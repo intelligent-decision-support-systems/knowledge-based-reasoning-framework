@@ -18,7 +18,7 @@ Download zip file [- download](https://github.com/intelligent-decision-support-s
 
 ### Build
 * Enter the following command from the root directory of the repsository<br>
-  `mvn clean package`
+  `mvn clean install`
 
 ### Run
 * Run `run_krf.sh` linux/mac
