@@ -1,8 +1,10 @@
 package org.uclab.mm.kcl.edket.krf.ui;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -11,6 +13,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -53,6 +56,7 @@ public class ReasonerGui {
     private JTextArea addFactArea;
     private JTextArea loadRuleArea;
     private JTextArea loadFactArea;
+    private JTextArea resultArea;
     private JLabel lblNewLabel;
     private JButton runBtn;
     private JPanel panel;
@@ -109,12 +113,26 @@ public class ReasonerGui {
      */
     private void initialize() {
         frame = new JFrame(APP_TITLE);
-        frame.setBounds(100, 100, 890, 545);
+        frame.setBounds(100, 100, 890, 601);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().setLayout(null);
         frame.getContentPane().add(getLeftPanel());
         frame.getContentPane().add(getPanel_1_1());
         frame.getContentPane().add(getMessagePanel());
+        
+        JPanel resultPanel = new JPanel();
+        resultPanel.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "RECOM", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+        resultPanel.setBounds(4, 443, 849, 86);
+        frame.getContentPane().add(resultPanel);
+        resultPanel.setLayout(new BorderLayout(0, 0));
+        
+        JScrollPane scrollPane_4 = new JScrollPane();
+        resultPanel.add(scrollPane_4, BorderLayout.CENTER);
+        
+        resultArea = new JTextArea();
+        resultArea.setBorder(null);
+        resultArea.setBackground(SystemColor.menu);
+        scrollPane_4.setViewportView(resultArea);
         frame.setResizable(false);
         // . loading rules and facts
         
@@ -335,7 +353,7 @@ public class ReasonerGui {
                     new Color(240, 240, 240), null));
             messagePanel.setBackground(UIManager
                     .getColor("InternalFrame.inactiveBorderColor"));
-            messagePanel.setBounds(-6, 484, 890, 32);
+            messagePanel.setBounds(-6, 540, 890, 32);
             messagePanel.setLayout(null);
             messagePanel.add(getMessage());
         }
@@ -426,11 +444,30 @@ public class ReasonerGui {
     public void generateRecommendations(){
         try {            
             RecommendationBuilder recommendationBuilder = new RecommendationBuilder(new PatternMatcher());
+            boolean batchInputCase = inputCaseBase.getInputCaseBase().size() > 1 ? true : false;
             for(Map<String, List<String>> conditionsValue : inputCaseBase.getInputCaseBase()){
                 KRFResult krfResult = recommendationBuilder.buildRecommendation(conditionsValue, knowledgeBase);
                 recommendationBuilder.generateResults(krfResult);
+                if(!batchInputCase){
+                    String recom = null;
+                    if(krfResult.getFinalResolvedRules().isEmpty()){
+                        recom = "No Rules Matched!";
+                    }else{
+                        Map<Integer, String> ruleMap = new HashMap<Integer, String>();
+                        for(KRFRule r : krfResult.getFinalResolvedRules()){
+                            ruleMap.put(r.getRuleID(), r.getRuleConclusion());
+                        }
+                        recom = KRFUtil.objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(ruleMap);
+                    }
+                    
+                    resultArea.setText(recom);
+                }
             }
-                
+            if(batchInputCase){
+                String batchResult = "No. of input cases[" + inputCaseBase.getInputCaseBase().size() + "], " + 
+                                "No. of rules[" + knowledgeBase.getRules().size() + "]";
+                resultArea.setText(batchResult);
+            }    
             message.setText("Done.");
 
         } catch (Exception ex) {
