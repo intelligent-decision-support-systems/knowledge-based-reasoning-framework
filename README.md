@@ -4,7 +4,8 @@ Knowledge-based Reasoning and Recommendation Framework (KRF)
 <br>
 <img src="https://github.com/intelligent-decision-support-systems/knowledge-based-reasoning-framework/blob/gh-pages/images/krf_crop.jpg">
 <br>
-**For single inputCase (fact) it will show recommendation in GUI**
+<hr>
+**KRF GUI with RECOM**
 <br>
 <img src="https://github.com/intelligent-decision-support-systems/knowledge-based-reasoning-framework/blob/gh-pages/images/recommendation.jpg">
 <br>
@@ -26,8 +27,8 @@ Download zip file [- download](https://github.com/intelligent-decision-support-s
 ### Run
 * Run `run_krf.sh` linux/mac
 * Run `run_krf.bat` windows
-<br>
-**Note:** <br>
+<br><br>
+**Note** <br>
 * The recommendation results will store in the root directory in `recommendationResults.csv` file.
 * You can append inputCases e.g. facts and rules from the GUI
 * You can play with KRF by adding/removing inputCases e.g. facts from `krf_input_cases_single.json` file
