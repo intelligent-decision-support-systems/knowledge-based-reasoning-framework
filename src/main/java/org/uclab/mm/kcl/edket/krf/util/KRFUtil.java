@@ -14,6 +14,9 @@ public class KRFUtil {
             log.error("Invalid Time Format: {}", time);
             return 0;
         }
+        if(time.contains(".")){
+            time = getTimeFromDecimal(time);
+        }
         String[] timeParts = time.split(":");
         int seconds = 0;
         for (String part : timeParts) {
@@ -55,5 +58,30 @@ public class KRFUtil {
         }
 
         return secs;
+    }
+    
+    public static String getTimeFromDecimal(String time){
+        String p1, p2, tag1 = null, tag2 = "";
+        String[] parts = time.split("\\.");
+        p1 = parts[0];
+        if(parts[1].contains("h")){
+            tag1 = "h";
+            tag2 = "m";
+        } else if (parts[1].contains("m")){
+            tag1 = "m";
+            tag2 = "s";
+        } else if (parts[1].contains("s")){
+            tag1 = "s";
+        }
+        try{
+            p2 = parts[1].replace(tag1, "");
+            int v = Integer.parseInt(p2);
+            v = (v*60) / 10;
+            time = p1 + tag1 + ":" + v + tag2;
+        }catch(Exception ex){
+            log.error("Invalid Time value {}", time);
+        }
+        
+        return time;
     }
 }
