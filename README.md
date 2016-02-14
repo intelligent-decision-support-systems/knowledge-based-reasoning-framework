@@ -5,7 +5,7 @@ Knowledge-based Reasoning and Recommendation Framework (KRF)
 <img src="https://github.com/intelligent-decision-support-systems/knowledge-based-reasoning-framework/blob/gh-pages/images/krf_crop.jpg">
 <br>
 <hr>
-KRF GUI with RECOM
+`KRF GUI with RECOM`
 <br>
 <img src="https://github.com/intelligent-decision-support-systems/knowledge-based-reasoning-framework/blob/gh-pages/images/recommendation.jpg">
 <br>
